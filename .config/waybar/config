@@ -103,7 +103,7 @@
   },
   "memory": {
     "interval": 30,
-    "format": "  {}%",
+    "format": "RAM:  {}%",
     "max-length": 10
   },
   "disk": {

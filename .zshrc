@@ -1,93 +1,51 @@
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+typeset -U path cdpath fpath manpath
+for profile in ${(z)NIX_PROFILES}; do
+  fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
+done
+
+HELPDIR="/nix/store/q02m3zz38942iyji3flncapak4m6sahh-zsh-5.9/share/zsh/$ZSH_VERSION/help"
+
+path+="$HOME/.zsh/plugins/fzf-tab"
+fpath+="$HOME/.zsh/plugins/fzf-tab"
+
+autoload -U compinit && compinit
+source /nix/store/jgsg8r6igflv8zgadvafy9bc187kw5mi-zsh-autosuggestions-0.7.1/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_STRATEGY=(history)
+
+
+if [[ -f "$HOME/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+  source "$HOME/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh"
 fi
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions fzf z docker history)
-source $ZSH/oh-my-zsh.sh
-# Basic exports
-export PATH="/sbin:$HOME/.local/bin:$PATH"
-export EDITOR='nvim'
-export VISUAL='nvim'
+# History options should be set in .zshrc and after oh-my-zsh sourcing.
+# See https://github.com/nix-community/home-manager/issues/177.
+HISTSIZE="10000"
+SAVEHIST="10000"
 
-# Tool replacements
-alias cat='bat'
-alias ls='eza --icons --group-directories-first'
-alias l='eza --icons --group-directories-first'
+HISTFILE="$HOME/.zsh_history"
+mkdir -p "$(dirname "$HISTFILE")"
 
-# Basic functions
-c() { clear }
-f() { fd . | fzf }
-fa() { fd . --no-ignore --hidden | fzf }
-v() { nvim $(fd . | fzf) }
-va() { nvim $(fd . --no-ignore --hidden | fzf) }
-yy() { yazi }
-cdf() { cd $(fd --type d | fzf) }
-cdfa() { cd $(fd --type d --no-ignore --hidden | fzf) }
-cdh() { cd $HOME }
-hh() { fc -ln 1 | fzf --tac | sh }
+setopt HIST_FCNTL_LOCK
+unsetopt APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+unsetopt HIST_IGNORE_ALL_DUPS
+unsetopt HIST_SAVE_NO_DUPS
+unsetopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_SPACE
+unsetopt HIST_EXPIRE_DUPS_FIRST
+setopt SHARE_HISTORY
+unsetopt EXTENDED_HISTORY
 
-# FZF integration
-pf() { ps -ef | fzf }
-rgp() { rg --line-number . | fzf --delimiter ':' --preview 'bat --color=always --highlight-line {2} {1}' }
-gfzf() { git log --oneline | fzf }
-gbf() { git checkout $(git branch | fzf | sed 's/^[ *]*//') }
-ef() { env | fzf }
-myip() { curl ipinfo.io }
 
-# Git aliases
-alias gs='git status'
-gadd() { git add "$@" }
-gcom() { git commit -m "$@" }
-alias gp='git push'
-alias gl='git pull'
-alias gd='git diff'
+export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+export PATH="$HOME/.npm-global/bin:$PATH"
 
-# NPM
-ni() { npm install "$@" }
-nid() { npm install --save-dev "$@" }
-nr() { npm run "$@" }
-alias nrs='npm run start'
-alias nrd='npm run dev'
-alias nrb='npm run build'
+# Install Claude Code if not present
+if ! command -v claude-code &> /dev/null; then
+  mkdir -p "$HOME/.npm-global"
+  npm install -g @anthropic-ai/claude-code
+fi
 
-#NIXOS
-nconfig() { sudo nvim /etc/nixos/configuration.nix }
-nrebuild() { sudo nixos-rebuild switch }
+source /nix/store/3q6wqx3hj73v31xqyl704dk49mkkslla-zsh-syntax-highlighting-0.8.0/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ZSH_HIGHLIGHT_HIGHLIGHTERS+=()
 
-# Poetry
-alias pl='poetry lock'
-alias pi='poetry install'
-pr() { poetry run "$@" }
-alias pm='poetry run python main.py'
 
-# Clipboard
-alias clip='wl-paste'
-copy() { echo "$@" | wl-copy }
-
-# Navigation
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-~() { cd $HOME }
-
-# Tmux
-ta() { tmux attach -t "$@" }
-
-# Cleanup
-clean-node() { rm -rf node_modules }
-clean-logs() { rm -f *.log }
-clean-temp() { rm -rf /tmp/* }
-
-# History with fzf insertion
-hhf() { 
-  local cmd=$(fc -ln 1 | fzf --tac --no-sort)
-  [[ -n "$cmd" ]] && print -z "$cmd"
-}
-
-# Key bindings
-bindkey -s '^e' 'nvim .\n'
-bindkey -s '^g' 'lazygit\n'
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

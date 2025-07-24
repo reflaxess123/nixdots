@@ -1,7 +1,25 @@
 { config, lib, pkgs, ... }:
 {
+  # Отключение IPv6 на уровне ядра
+  boot.kernelParams = [ 
+    "ipv6.disable=1" 
+  ];
+
+  # Отключение IPv6 в networking
+  networking = {
+    enableIPv6 = false;
+  };
+
+  # Дополнительные sysctl настройки для полного отключения
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.all.disable_ipv6" = 1;
+    "net.ipv6.conf.default.disable_ipv6" = 1;
+    "net.ipv6.conf.lo.disable_ipv6" = 1;
+  };
+
   imports = [
     ./hardware-configuration.nix
+    <home-manager/nixos>
   ];
   
   nixpkgs.config.allowUnfree = true;
@@ -102,27 +120,95 @@
       "wheel" "networkmanager" "audio" "video" "input"
       "docker" "lp" "plugdev"
     ];
-    packages = with pkgs; [
-      # Hyprland ecosystem packages
-      waybar          # status bar
-      wofi           # application launcher
-      dunst          # notifications
-      swww           # wallpaper daemon
-      grim           # screenshots
-      slurp          # screen selection
-      wl-clipboard   # clipboard utilities
+  };
+  
+  # Home Manager configuration
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "backup";
+  home-manager.users.crack = { pkgs, ... }: {
+    home.stateVersion = "25.05";
+    
+    # Пакеты пользователя
+    home.packages = with pkgs; [
+      # Browsers
+      firefox brave google-chrome
       
-      # Your existing packages
-      ghostty firefox brave google-chrome telegram-desktop
-      git vim neovim tmux zsh nodejs gcc wget curl unzip vscode ripgrep fd python3
-      clang cmake zsh-syntax-highlighting zsh-autosuggestions fzf bar eza docker
-      yazi poetry lazygit bat nautilus pavucontrol
-      cliphist udiskie eww redsocks bluez
-      blueman bluez-tools
-      config.hardware.nvidia.package.settings
-      proxychains
-      nodePackages.npm
+      # Communication
+      telegram-desktop
+      
+      # Development
+      git vim neovim tmux nodejs gcc wget curl unzip vscode ripgrep fd python3
+      cmake poetry lazygit bat
+      
+      # System utilities
+      nautilus pavucontrol cliphist udiskie
+      blueman bluez-tools proxychains
+      
+      # Wayland/Hyprland specific
+      eww swaynotificationcenter
     ];
+    
+    # Shell configuration
+    programs.bash = {
+      enable = true;
+      bashrcExtra = ''
+        export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+        export PATH="$HOME/.npm-global/bin:$PATH"
+        
+        # Install Claude Code if not present
+        if ! command -v claude &> /dev/null; then
+          mkdir -p "$HOME/.npm-global"
+          npm install -g @anthropic-ai/claude
+        fi
+      '';
+    };
+    
+    programs.zsh = {
+      enable = true;
+      enableCompletion = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+      
+      initExtra = ''
+        export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+        export PATH="$HOME/.npm-global/bin:$PATH"
+        
+        # Install Claude Code if not present
+        if ! command -v claude &> /dev/null; then
+          mkdir -p "$HOME/.npm-global"
+          npm install -g @anthropic-ai/claude
+        fi
+      '';
+      
+      plugins = [
+        {
+          name = "fzf-tab";
+          src = pkgs.fetchFromGitHub {
+            owner = "Aloxaf";
+            repo = "fzf-tab";
+            rev = "v1.1.2";
+            sha256 = "Qv8zAiMtrr67CbLRrFjGaPzFZcOiMVEFLg1Z+N6VMhg=";
+          };
+        }
+      ];
+    };
+    
+    # Git configuration
+    programs.git = {
+      enable = true;
+      userName = "crack";
+      userEmail = "crack@example.com"; # замените на свой email
+    };
+    
+    # NPM configuration
+    home.file.".npmrc".text = ''
+      prefix=''${HOME}/.npm-global
+    '';
+    
+    # Создание директории для npm
+    # Создание директории для npm через home.file
+    home.file.".npm-global/.keep".text = "";
   };
   
   services.pipewire = {
@@ -137,6 +223,14 @@
   programs.zsh.enable = true;
   
   environment.systemPackages = with pkgs; [
+    # Hyprland ecosystem packages
+    waybar          # status bar
+    wofi           # application launcher
+    swww           # wallpaper daemon
+    grim           # screenshots
+    slurp          # screen selection
+    wl-clipboard   # clipboard utilities
+    
     # Additional Hyprland utilities
     hyprpaper      # wallpaper utility
     hypridle       # idle daemon
@@ -154,11 +248,25 @@
     # Terminal emulator optimized for Wayland
     kitty
     alacritty
+    ghostty
     
-    # Network tools
+    # Development tools
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    fzf
+    bar
+    eza
+    docker
+    yazi
+    
+    # System tools
     iptables       # для управления правилами
     redsocks       # прокси
     libnotify      # для notify-send
+    nodePackages.npm
+    
+    # Hardware specific
+    config.hardware.nvidia.package.settings
   ];
   
   # XDG portal for Hyprland

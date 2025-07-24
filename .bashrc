@@ -1,11 +1,7 @@
 export NPM_CONFIG_PREFIX="$HOME/.npm-global"
 export PATH="$HOME/.npm-global/bin:$PATH"
 
-# Install Claude Code if not present
-if ! command -v claude-code &> /dev/null; then
-  mkdir -p "$HOME/.npm-global"
-  npm install -g @anthropic-ai/claude-code
-fi
+
 
 
 # Commands that should be applied only for interactive shells.

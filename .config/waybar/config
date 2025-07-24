@@ -21,7 +21,7 @@
     "hyprland/workspaces"
   ],
   "modules-right": [
-    "hyprland/language",
+    "custom/language",
     "bluetooth",
     "pulseaudio",
     "custom/mic-volume",
@@ -30,9 +30,13 @@
     "clock",
     "custom/power"
   ],
-  "hyprland/language": {
-    "format-us": "US",
-    "format-ru": "RU"
+  "custom/language": {
+    "exec": "~/.config/waybar/scripts/language-status.sh",
+    "return-type": "json",
+    "restart-interval": 1,
+    "format": "{}",
+    "tooltip": true,
+    "signal": 1
   },
   "pulseaudio": {
     "tooltip": false,

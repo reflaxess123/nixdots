@@ -13,7 +13,7 @@ start_redsocks() {
     sudo pkill redsocks 2>/dev/null || true
     
     # Запускаем redsocks
-    sudo /etc/profiles/per-user/crack/bin/redsocks -c /etc/redsocks.conf &
+    sudo /run/current-system/sw/bin/redsocks -c /etc/redsocks.conf &
     sleep 1
     
     # Создаем цепочку REDSOCKS

@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-# Получаем активную раскладку для главной клавиатуры (main: yes)
-CURRENT_LAYOUT=$(hyprctl devices | grep -B2 -A4 "main: yes" | grep "active keymap:" | sed 's/.*active keymap: //')
+# Получаем все активные раскладки и ищем русскую
+RUSSIAN_LAYOUT=$(hyprctl devices | grep "active keymap:" | grep -c "Russian")
 
-# Проверяем текущую активную раскладку
-if [[ "$CURRENT_LAYOUT" == *"Russian"* ]]; then
+# Проверяем, есть ли активная русская раскладка
+if [ "$RUSSIAN_LAYOUT" -gt 0 ]; then
     echo '{"text": "RU", "tooltip": "Russian keyboard layout"}'
-elif [[ "$CURRENT_LAYOUT" == *"English"* ]]; then
-    echo '{"text": "EN", "tooltip": "English keyboard layout"}'
 else
-    echo '{"text": "??", "tooltip": "Layout: '"$CURRENT_LAYOUT"'"}'
+    echo '{"text": "EN", "tooltip": "English keyboard layout"}'
 fi

@@ -140,4 +140,66 @@
   
   # Create npm directory
   home.file.".npm-global/.keep".text = "";
+  # Tmux configuration
+  programs.tmux = {
+    enable = true;
+    prefix = "C-a";
+    mouse = true;
+    baseIndex = 1;
+    escapeTime = 0;
+    keyMode = "vi";
+    
+    extraConfig = ''
+      # Split panes
+      bind - split-window -v
+      bind _ split-window -h
+      
+      # Reload config
+      bind r source-file ~/.tmux.conf ; display-message "Config reloaded!"
+      
+      # Switch between panes (vim-like)
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+      
+      # Resize panes
+      bind -r H resize-pane -L 5
+      bind -r J resize-pane -D 5
+      bind -r K resize-pane -U 5
+      bind -r L resize-pane -R 5
+      
+      # Switch between windows
+      bind C-h previous-window
+      bind C-l next-window
+      
+      # Start windows and panes at 1, not 0
+      set -g base-index 1
+      setw -g pane-base-index 1
+      
+      # Renumber windows when a window is closed
+      set -g renumber-windows on
+      
+      # Status bar position
+      set -g status-position top
+      
+      # Catppuccin theme colors (mocha)
+      set -g status-bg "#1e1e2e"
+      set -g status-fg "#cdd6f4"
+      set -g pane-border-style "fg=#45475a"
+      set -g pane-active-border-style "fg=#89b4fa"
+      set -g message-style "bg=#89b4fa,fg=#1e1e2e"
+      set -g mode-style "bg=#f38ba8,fg=#1e1e2e"
+      
+      # Window status format
+      set -g window-status-format "#[fg=#6c7086] #I #W "
+      set -g window-status-current-format "#[fg=#89b4fa,bold] #I #W "
+      
+      # Status bar content
+      set -g status-left ""
+      set -g status-right "#[fg=#89b4fa]#S #[fg=#cdd6f4]| %H:%M %d-%b-%y"
+      set -g status-justify left
+    '';
+  };
+
 }

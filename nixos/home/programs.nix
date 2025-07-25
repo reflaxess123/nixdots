@@ -150,15 +150,9 @@
     keyMode = "vi";
 
     plugins = with pkgs.tmuxPlugins; [
-      {
-        plugin = catppuccin;
-        extraConfig = ''
-          set -g @catppuccin_flavour "mocha"
-          set -g @catppuccin_window_status_style "rounded"
-          set -g @catppuccin_status_left_separator "█"
-          set -g @catppuccin_status_right_separator "█"
-        '';
-      }
+      catppuccin
+      cpu
+      battery
     ];
     
     extraConfig = ''
@@ -167,7 +161,7 @@
       bind _ split-window -h
       
       # Reload config
-      bind r source-file ~/.tmux.conf ; display-message "Config reloaded!"
+      bind r source-file ~/.tmux.conf \; display-message "Config reloaded\!"
       
       # Switch between panes (vim-like)
       bind h select-pane -L
@@ -192,10 +186,29 @@
       # Renumber windows when a window is closed
       set -g renumber-windows on
       
+      # Catppuccin theme configuration
+      set -g @catppuccin_flavour "mocha"
+      set -g @catppuccin_window_status_style "rounded"
+      set -g @catppuccin_window_left_separator ""
+      set -g @catppuccin_window_right_separator " "
+      set -g @catppuccin_window_middle_separator " █"
+
+      # Status bar modules
+      set -g status-right-length 100
+      set -g status-left-length 100
+      set -g status-left ""
+      set -g status-right "#{E:@catppuccin_status_session}"
+      set -ag status-right "#{E:@catppuccin_status_date_time}"
+      set -ag status-right "#{E:@catppuccin_status_host}"
+
+
       # Status bar position
       set -g status-position top
       
+      
+      # Make background transparent
+      set -g status-bg default
+      set -g status-style bg=default
     '';
   };
-
 }

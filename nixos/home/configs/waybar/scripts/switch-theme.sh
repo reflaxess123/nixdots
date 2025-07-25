@@ -309,6 +309,17 @@ if [ "$CURRENT_THEME" = "dark" ]; then
     gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
     
+    # Update environment variables for current session
+    export GTK_THEME="Adwaita"
+    export QT_STYLE_OVERRIDE="adwaita"
+    
+    # Update systemd user environment
+    systemctl --user set-environment GTK_THEME="Adwaita"
+    systemctl --user set-environment QT_STYLE_OVERRIDE="adwaita"
+    
+    # Notify running applications about theme change
+    gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.Read org.freedesktop.appearance color-scheme >/dev/null 2>&1 || true
+    
     # Switch NeoVim to light theme (если существует)
     if [ -f "/home/crack/.config/nvim/lua/chadrc.lua" ]; then
         sed -i 's/theme = "onedark"/theme = "github_light"/' /home/crack/.config/nvim/lua/chadrc.lua
@@ -361,6 +372,17 @@ else
     # Set GTK theme to dark
     gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    
+    # Update environment variables for current session
+    export GTK_THEME="Adwaita-dark"
+    export QT_STYLE_OVERRIDE="adwaita-dark"
+    
+    # Update systemd user environment
+    systemctl --user set-environment GTK_THEME="Adwaita-dark"
+    systemctl --user set-environment QT_STYLE_OVERRIDE="adwaita-dark"
+    
+    # Notify running applications about theme change
+    gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.Read org.freedesktop.appearance color-scheme >/dev/null 2>&1 || true
     
     # Switch NeoVim to dark theme (если существует)
     if [ -f "/home/crack/.config/nvim/lua/chadrc.lua" ]; then

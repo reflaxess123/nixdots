@@ -28,6 +28,6 @@ wl-paste --type text --watch cliphist store &
 wl-paste --type image --watch cliphist store &
 
 # Устанавливаем курсор
-hyprctl setcursor mcmojave-cursors 20
+hyprctl setcursor macOS 24
 
 echo "✅ UI службы перезапущены"

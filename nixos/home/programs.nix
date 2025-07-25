@@ -22,7 +22,7 @@
       plugins = [ "git" "z" "docker" "history" ];
     };
     
-    initExtra = ''
+    initContent = ''
       # Basic exports
       export PATH="/sbin:$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"
       export NPM_CONFIG_PREFIX="$HOME/.npm-global"

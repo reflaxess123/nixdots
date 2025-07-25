@@ -21,6 +21,7 @@
     wofi           # application launcher
     swww           # wallpaper daemon
     grim           # screenshots
+    hyprshot       # screenshot tool
     slurp          # screen selection
     wl-clipboard   # clipboard utilities
     

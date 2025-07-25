@@ -32,13 +32,16 @@
       source = ./configs/ghostty;
       recursive = true;
     };
-  };
-  
-  # Scripts
-  home.file = {
+    
     # GPU fan control script
     "gpu-fan-control.sh" = {
       source = ./scripts/gpu-fan-control.sh;
+      executable = true;
+    };
+    
+    # Screenshot script
+    "screenshot.sh" = {
+      source = ./scripts/screenshot.sh;
       executable = true;
     };
   };

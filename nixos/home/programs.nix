@@ -148,6 +148,18 @@
     baseIndex = 1;
     escapeTime = 0;
     keyMode = "vi";
+
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = catppuccin;
+        extraConfig = ''
+          set -g @catppuccin_flavour "mocha"
+          set -g @catppuccin_window_status_style "rounded"
+          set -g @catppuccin_status_left_separator "█"
+          set -g @catppuccin_status_right_separator "█"
+        '';
+      }
+    ];
     
     extraConfig = ''
       # Split panes
@@ -183,22 +195,6 @@
       # Status bar position
       set -g status-position top
       
-      # Catppuccin theme colors (mocha)
-      set -g status-bg "#1e1e2e"
-      set -g status-fg "#cdd6f4"
-      set -g pane-border-style "fg=#45475a"
-      set -g pane-active-border-style "fg=#89b4fa"
-      set -g message-style "bg=#89b4fa,fg=#1e1e2e"
-      set -g mode-style "bg=#f38ba8,fg=#1e1e2e"
-      
-      # Window status format
-      set -g window-status-format "#[fg=#6c7086] #I #W "
-      set -g window-status-current-format "#[fg=#89b4fa,bold] #I #W "
-      
-      # Status bar content
-      set -g status-left ""
-      set -g status-right "#[fg=#89b4fa]#S #[fg=#cdd6f4]| %H:%M %d-%b-%y"
-      set -g status-justify left
     '';
   };
 

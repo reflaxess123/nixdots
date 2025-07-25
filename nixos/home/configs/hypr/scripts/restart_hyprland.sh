@@ -22,8 +22,8 @@ echo "🚀 Запуск служб..."
 swaync &
 swww-daemon &
 waybar &
-nm-applet &
-udiskie --tray &
+# nm-applet & (закомментировано - отсутствует в системе)
+# udiskie --tray & (закомментировано - проблемы с UDisks2)
 wl-paste --type text --watch cliphist store &
 wl-paste --type image --watch cliphist store &
 

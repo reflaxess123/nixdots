@@ -14,7 +14,7 @@ window#waybar {
 
 /* Левый блок */
 .modules-left {
-  background-color: #0c0c0c;
+  background-color: rgba(12, 12, 12, 0.8);
   border-radius: 25px;
   padding: 0 15px;
   border: none;
@@ -22,14 +22,14 @@ window#waybar {
 
 /* Правый блок */
 .modules-right {
-  background-color: #0c0c0c;
+  background-color: rgba(12, 12, 12, 0.8);
   border-radius: 25px;
   padding: 0 15px;
   border: none;
 }
 
 .modules-center {
-  background-color: #0c0c0c;
+  background-color: rgba(12, 12, 12, 0.8);
   border-radius: 25px;
   padding: 0 5px;
   border: none;

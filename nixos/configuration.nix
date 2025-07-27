@@ -168,6 +168,7 @@
     ghostty
     
     # Development tools
+    obs-studio
     zsh-syntax-highlighting
     zsh-autosuggestions
     fzf
